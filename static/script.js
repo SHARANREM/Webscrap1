@@ -38,23 +38,28 @@ document.getElementById("singleResultForm").addEventListener("submit", async fun
 
 
 
+document.getElementById("bulkResultForm").addEventListener("submit", async function (event) {
+  event.preventDefault();
 
-document
-  .getElementById("bulkResultForm")
-  .addEventListener("submit", async function (event) {
-    event.preventDefault();
+  const fileInput = document.getElementById("fileUpload");
+  const formData = new FormData();
+  formData.append("file", fileInput.files[0]);
 
-    const fileInput = document.getElementById("fileUpload");
-    const formData = new FormData();
-    formData.append("file", fileInput.files[0]);
+  const downloadStatus = document.getElementById("download-status");
+  downloadStatus.textContent = "Processing... Your download will be started soon";
+  
 
-    const response = await fetch("/bulk_upload", {
-      method: "POST",
-      body: formData,
-    });
+  try {
+      const response = await fetch("/bulk_upload", {
+          method: "POST",
+          body: formData,
+      });
 
-    const bulkResultMessage = document.createElement("div");
-    if (response.ok) {
+      if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error);
+      }
+
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -63,13 +68,18 @@ document
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      bulkResultMessage.innerHTML ="";
-      bulkResultMessage.innerHTML = `<div class='alert alert-success'>Bulk results downloaded successfully!</div>`;
-    } else {
-      const errorData = await response.json();
-      bulkResultMessage.innerHTML = "";  
-      bulkResultMessage.innerHTML = `<div class='alert alert-danger'>${errorData.error}</div>`;
-    }
 
-    document.querySelector(".container").appendChild(bulkResultMessage);
-  });
+      setTimeout(() => {
+          downloadStatus.textContent="Process Bulk Results";
+      }, 2000);
+      
+      const bulkResultMessage = document.createElement("div");
+      bulkResultMessage.innerHTML = `<div class='alert alert-success'>Bulk results downloaded successfully!</div>`;
+      document.querySelector(".container").appendChild(bulkResultMessage);
+
+  } catch (error) {
+      console.error("Error:", error);
+      downloadStatus.textContent = "Process Bulk Results Failed";
+      alert("An error occurred: " + error.message);
+  }
+});

@@ -1,13 +1,13 @@
-// Single Result Submission
+
 document.getElementById("singleResultForm").addEventListener("submit", async function(event) {
   event.preventDefault();
 
-  const dobInput = document.getElementById("dob").value;  // "2005-10-03"
-  const formattedDOB = dobInput.split("-").reverse().join("/");  // Converts to "03/10/2005"
+  const dobInput = document.getElementById("dob").value;  
+  const formattedDOB = dobInput.split("-").reverse().join("/");  
 
   const formData = new FormData();
   formData.append("regno", document.getElementById("regno").value.trim());
-  formData.append("dob", formattedDOB);  // Correct format for your Flask app
+  formData.append("dob", formattedDOB);  
 
   const response = await fetch("/fetch_result", {
       method: "POST",
@@ -38,7 +38,7 @@ document.getElementById("singleResultForm").addEventListener("submit", async fun
 
 
 
-// Bulk Upload Submission
+
 document
   .getElementById("bulkResultForm")
   .addEventListener("submit", async function (event) {

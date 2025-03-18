@@ -11,7 +11,7 @@ app = Flask(__name__)
 CORS(app)
 RESULTS_URL = "https://egovernance.unom.ac.in/results/ugresultpage.asp"
 
-# Function to fetch and parse results
+
 def fetch_results(regno, dob):
     session = requests.Session()
     payload = {"regno": regno, "pwd": dob, "submit": "Get Result"}
@@ -37,7 +37,7 @@ def fetch_results(regno, dob):
     except AttributeError:
         return None, "Parsing error"
 
-# Route for Single Student Results
+
 @app.route("/fetch_result", methods=["POST"])
 def fetch_single():
     regno = request.form.get("regno", "").strip()
@@ -52,7 +52,7 @@ def fetch_single():
     
     return jsonify(result)
 
-# Route for Bulk Results
+
 @app.route("/bulk_upload", methods=["POST"])
 def bulk_upload():
     file = request.files["file"]
@@ -67,12 +67,11 @@ def bulk_upload():
     for _, row in df.iterrows():
         regno, dob = str(row["Register No"]), row["DOB"]
 
-# Ensure DOB is in DD/MM/YYYY format
         if isinstance(dob, str):
             parts = dob.split("/")
             if len(parts) == 3:
-                day = parts[0].zfill(2)  # Ensure two-digit day
-                month = parts[1].zfill(2)  # Ensure two-digit month
+                day = parts[0].zfill(2)  
+                month = parts[1].zfill(2)  
                 year = parts[2]
                 dob = f"{day}/{month}/{year}"
 
@@ -88,7 +87,7 @@ def bulk_upload():
                 student_entry[subject] = f"UE: {r['UE']}, IA: {r['IA']}, Total: {r['Total']}, Result: {r['Result']}"
             student_data.append(student_entry)
         
-        time.sleep(1)  # Add delay to prevent rate-limiting issues
+        time.sleep(1)  
     
     columns = ["Name", "Register No", "DOB"] + sorted(all_subjects)
     output_df = pd.DataFrame(student_data, columns=columns)
@@ -98,7 +97,7 @@ def bulk_upload():
     
     return send_file(output_file, as_attachment=True)
 
-# Route to Render Frontend
+
 @app.route("/")
 def home():
     return render_template("index.html")

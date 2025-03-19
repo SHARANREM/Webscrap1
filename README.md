@@ -55,8 +55,8 @@ python app.py
 
 ---
 ## 🤝 **Contributors**
-- **Sharan Remo** (Lead Developer)
-- **[Your Team Members]**
+- **Sharan B** (Lead Developer)
+- **Santhosh V** (Assistant Developer)
 
 🌟 *This project was built as part of the PAN India Web Scraping Challenge 2025 to revolutionize student result access!* 🔥
 
